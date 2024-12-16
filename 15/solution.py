@@ -3,9 +3,8 @@ import copy
 
 import numpy as np
 
-in_file = "sample3.txt"
-# in_file = "sample2.txt"
-# in_file = "input.txt"
+in_file = "sample.txt"
+in_file = "input.txt"
 with open(in_file) as f:
     data = f.read().split("\n\n")
 board = data[0].splitlines()
@@ -54,14 +53,13 @@ def look_some_more(board, start, direction):
 
     indices = []
 
-    # Traverse in the direction while staying within bounds
+    # stay within bounds
     while 0 <= r < rows and 0 <= c < cols:
         if board[r, c] not in ["O", "[", "]"]:
             if board[r, c] == ".":
                 indices.append((r, c))  # Include the '.' in the result
                 return indices
             return None  # Return an empty list if it's not '.'
-        # Add the current "O" index to the list
         indices.append((r, c))
         # Move in the direction
         r += dr
@@ -79,7 +77,6 @@ box_signs = ["[", "]"]
 
 
 def move_once(board, move, c_pos: tuple | None = None):
-    print(f"move {move}")
     if c_pos is None:
         c_pos = get_current_position(board)
     move_direction = move_map[move]
@@ -115,7 +112,6 @@ def move_once(board, move, c_pos: tuple | None = None):
             all_connected_boxes = sort_boxes(all_connected_boxes)
             if move == "v":
                 all_connected_boxes = list(reversed(all_connected_boxes))
-            print(all_connected_boxes)
             for box in all_connected_boxes:
                 # change one above/below to this
                 below = element_minus(box, move_direction)
@@ -124,6 +120,8 @@ def move_once(board, move, c_pos: tuple | None = None):
                         board[box] = "@"
                     else:
                         board[box] = "."
+                elif below not in all_connected_boxes:
+                    board[box] = "."
                 else:
                     board[box] = board[below]
             board[next_pos] = "@"
@@ -180,8 +178,6 @@ def part2(board):
 b = board
 for m in moves:
     b = move_once(b, m)
-    print_board(b)
-    print("\n")
 
 part1(b)
 # %%
@@ -190,17 +186,9 @@ print_board(board2)
 print("\n")
 for i, m in enumerate(moves):
     b = move_once(b, m)
-    if i > 280 and i < 320:
-        if i == 308:
-            debu = copy.deepcopy(b)
-        print(f"Iteration: {i}")
-        print_board(b)
-        print("\n")
 print_board(b)
 
 
 part2(b)
 
 # %%
-print_board(debu)
-move_once(debu, "v")
